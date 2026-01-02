@@ -16,6 +16,8 @@ retirer les fichiers parasites, eg : user, etc
 voir c'est quoi le bail avec swagger
 
 
+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
+
 
 --------------------
 
