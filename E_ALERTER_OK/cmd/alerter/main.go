@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"middleware/alerter/internal/configclient"
-	"middleware/alerter/internal/mailer"
-	"middleware/alerter/internal/nats"
+	"middleware/internal/helpers/configclient"
+	"middleware/internal/helpers/mailer"
+	"middleware/internal/helpers/nats"
 )
 
 func env(k, d string) string {
@@ -22,12 +22,13 @@ func main() {
 	configURL := env("CONFIG_URL", "http://localhost:8080")
 	//mailAPI   := env("MAIL_API_URL", "https://mail.edu.forestier.re/api")
 	mailAPI   := env("MAIL_API_URL", "https://mail-api.edu.forestier.re")
-	mailToken := env("MAIL_TOKEN", "") // depuis le portail GCC
+	//mailToken := env("MAIL_TOKEN", "") // depuis le portail GCC
+	mailToken := "iWCUqAFlwQoQNakAvksXOTSUGospGVejjdbVOeXX" 
 
 	cfg := configclient.New(configURL)
 	mc  := mailer.New(mailAPI, mailToken)
 
-	r := &natsc.Runner{
+	r := &nats.Runner{ 
 		NatsURL: natsURL,
 		Config:  cfg,
 		Mailer:  mc,

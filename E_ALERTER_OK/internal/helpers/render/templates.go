@@ -5,22 +5,30 @@ import (
 	"embed"
 	"strings"
 	"text/template"
+	"time"
+	"fmt"
 
-	"middleware/alerter/internal/models"
+	 "middleware/internal/models"
 )
 
-// On embarque tout le répertoire templates/ dans ce package.
-//go:embed templates/*
+
 var tplFS embed.FS
 
+
+
 type payload struct {
-	Title     string
-	Start     string
-	End       string
-	Location  string
-	Changes   []models.Change
-	EmailText string // fallback
+	Title    string
+	StartFmt string
+	EndFmt   string
+	Location string
+	Changes  []string
 }
+
+
+
+
+
+
 
 // parse un front-matter minimal de la forme:
 // ---\n
@@ -73,14 +81,19 @@ func RenderMail(evt models.AlertEvent) (subject string, body string, err error) 
 	}
 
 	buf := new(bytes.Buffer)
+	
+	start, _ := time.Parse(time.RFC3339, evt.Start)
+	end,   _ := time.Parse(time.RFC3339, evt.End)
+
 	data := payload{
-		Title:     evt.Title,
-		Start:     evt.Start,
-		End:       evt.End,
-		Location:  evt.Location,
-		Changes:   evt.Changes,
-		EmailText: evt.EmailText,
+	Title:    evt.Title,
+	StartFmt: start.Format("Monday 02 January 2006 à 15h04"),
+	EndFmt:   end.Format("15h04"),
+	Location: evt.Location,
+	Changes:  humanChanges(evt.Changes),
 	}
+
+
 	if err := t.Execute(buf, data); err != nil {
 		return "", "", err
 	}
@@ -99,4 +112,41 @@ func RenderMail(evt models.AlertEvent) (subject string, body string, err error) 
 	//return subject, buf.String(), nil
 }
 
+func humanChanges(changes []models.Change) []string {
+	var res []string
 
+	for _, c := range changes {
+		switch c.Kind {
+
+		case "room_change":
+			res = append(res,
+				fmt.Sprintf(
+					"Le lieu a été modifié : ancienne salle %s, nouvelle salle %s.",
+					c.Old, c.New,
+				))
+
+		case "time_change":
+			res = append(res,
+				fmt.Sprintf(
+					"L’horaire a été modifié : %s → %s.",
+					c.Old, c.New,
+				))
+
+		case "title_change":
+			res = append(res,
+				fmt.Sprintf(
+					"Le titre du cours a changé : « %s » → « %s ».",
+					c.Old, c.New,
+				))
+
+		case "description_change":
+			res = append(res,
+				"La description du cours a été mise à jour.")
+
+		default:
+			res = append(res,
+				fmt.Sprintf("%s : %s → %s.", c.Field, c.Old, c.New))
+		}
+	}
+	return res
+}

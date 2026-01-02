@@ -1,4 +1,4 @@
-# TP middleware example
+# TP middleware API CONFIG 
 
 ## Run
 
@@ -11,16 +11,4 @@ Build & run :
 go run cmd/main.go
 ```
 
----
-Or build : 
-```
-go build -o middleware_users cmd/main.go
-```
-Then run : 
-```
-./middleware_users
-```
-
-## Documentation
-
-Documentation is visible in **api** directory ([here](api/swagger.json)).
+swagger UI : http://localhost:8080/swagger/index.html 

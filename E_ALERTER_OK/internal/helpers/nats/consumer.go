@@ -1,4 +1,4 @@
-package natsc
+package nats
 
 import (
 	"context"
@@ -9,10 +9,10 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
 
-	"middleware/alerter/internal/configclient"
-	"middleware/alerter/internal/mailer"
-	"middleware/alerter/internal/models"
-	"middleware/alerter/internal/render"
+	"middleware/internal/helpers/configclient"
+	"middleware/internal/helpers/mailer"
+	"middleware/internal/helpers/render"
+	 "middleware/internal/models"
 )
 
 type Runner struct {

@@ -1,5 +1,11 @@
 package main
 
+// @title        API TIMETABLE 
+// @version      1.0
+// @description  API de lecture des évènements (iCal) de l'UCA.
+// @schemes      http
+// @BasePath     /
+
 import (
 	"fmt"
 	"log"
@@ -12,6 +18,7 @@ import (
 
 	"middleware/example/internal/controllers"
 	"middleware/example/internal/services"
+	_ "middleware/example/docs"
 )
 
 func main() {
@@ -24,15 +31,14 @@ func main() {
 	r := chi.NewRouter()
 
 	// Swagger (re-use the same /api swagger dir if you generate combined docs)
-	r.Handle("/api/*", http.StripPrefix("/api", http.FileServer(http.Dir("./api"))))
-	r.Get("/swagger/*", httpSwagger.Handler(
-		httpSwagger.URL("/api/swagger.json"),
-	))
+	r.Handle("/docs/*", http.StripPrefix("/docs", http.FileServer(http.Dir("./docs"))))
+	r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("/docs/swagger.json"),))
 
 	// Routes
 	r.Get("/events", ctrl.List)
 	//new
 	r.Get("/events/{id}", ctrl.GetByID)
+	//id := chi.URLParam(r, "id")
 
 	port := os.Getenv("PORT")
 	if port == "" {

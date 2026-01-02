@@ -1,0 +1,290 @@
+basePath: /
+definitions:
+  models.APIError:
+    properties:
+      message:
+        type: string
+    type: object
+  models.Agenda:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.Alert:
+    properties:
+      agenda_id:
+        type: string
+      condition:
+        description: e.g., "always", "room_change"
+        type: string
+      id:
+        type: string
+      target:
+        description: e.g., email address
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API de gestion des agendas et alertes
+  title: Config API
+  version: "1.0"
+paths:
+  /agendas:
+    get:
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Lister les agendas
+      tags:
+      - agendas
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Agenda
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/models.Agenda'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Agenda'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Créer un agenda
+      tags:
+      - agendas
+  /agendas/{id}:
+    delete:
+      parameters:
+      - description: ID agenda
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Supprimer un agenda
+      tags:
+      - agendas
+    get:
+      parameters:
+      - description: ID agenda
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Récupérer un agenda
+      tags:
+      - agendas
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID agenda
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Agenda (le champ id du body est ignoré, l'URL fait foi)
+        in: body
+        name: agenda
+        required: true
+        schema:
+          $ref: '#/definitions/models.Agenda'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Mettre à jour un agenda
+      tags:
+      - agendas
+  /alerts:
+    get:
+      parameters:
+      - description: Filtrer par agenda_id
+        in: query
+        name: agenda_id
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Lister les alertes
+      tags:
+      - alerts
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Alerte
+        in: body
+        name: alert
+        required: true
+        schema:
+          $ref: '#/definitions/models.Alert'
+      produces:
+      - text/plain
+      responses:
+        "201":
+          description: Created
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Créer une alerte
+      tags:
+      - alerts
+  /alerts/{id}:
+    delete:
+      parameters:
+      - description: ID alerte
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Supprimer une alerte
+      tags:
+      - alerts
+    get:
+      parameters:
+      - description: ID alerte
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Récupérer une alerte
+      tags:
+      - alerts
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID alerte
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Alerte
+        in: body
+        name: alert
+        required: true
+        schema:
+          $ref: '#/definitions/models.Alert'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Mettre à jour une alerte
+      tags:
+      - alerts
+schemes:
+- http
+swagger: "2.0"

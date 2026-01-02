@@ -1,16 +1,17 @@
 ---
-subject: "[EDT] Mise à jour: {{ .Title }}"
+subject: "[EDT] Mise à jour : {{ .Title }}"
 ---
 
-Mise à jour du cours: {{ .Title }}
-Quand: {{ .Start }} → {{ .End }}
-Où: {{ .Location }}
+Le cours **{{ .Title }}** a été modifié.
 
-Détails des modifications:
+Quand : {{ .StartFmt }} → {{ .EndFmt }}
+Où   : {{ .Location }}
+
+Détails des modifications :
 {{- if .Changes }}
 {{- range .Changes }}
-- [{{ .Field }}] {{ .Old }} -> {{ .New }} ({{ .Kind }})
+- {{ . }}
 {{- end }}
 {{- else }}
-(aucun détail fourni)
+Aucun détail supplémentaire.
 {{- end }}

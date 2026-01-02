@@ -25,25 +25,13 @@ func (c *AlertController) Routes() chi.Router {
 	return r
 }
 
-// list
-// @Summary      List alerts (optional filter by agenda_id)
+// @Summary      Lister les alertes
 // @Tags         alerts
-// @Produce      json
-// @Param        agenda_id  query  string  false  "Filter by agenda id"
-// @Success      200  {array}   models.Alert
+// @Param        agenda_id  query     string  false  "Filtrer par agenda_id"
+// @Produce      plain
+// @Success      200  {string}  string
 // @Failure      400  {object}  models.APIError
 // @Router       /alerts [get]
-/*func (c *AlertController) list(w http.ResponseWriter, r *http.Request) {
-	q := r.URL.Query().Get("agenda_id")
-	var filter *string
-	if q != "" {
-		filter = &q
-	}
-	items, err := c.svc.List(r.Context(), filter)
-	if err != nil { writeErr(w, http.StatusBadRequest, err.Error()); return }
-	writeJSON(w, http.StatusOK, items)
-}*/
-
 func (c *AlertController) list(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query().Get("agenda_id")
 	var filter *string
@@ -78,31 +66,14 @@ func (c *AlertController) list(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-
-
-
-
-
-
-
-
-// get
-// @Summary      Get alert by id
+// @Summary      Récupérer une alerte
 // @Tags         alerts
-// @Param        id   path  string  true  "Alert ID"
-// @Produce      json
-// @Success      200  {object}  models.Alert
+// @Param        id   path      string  true  "ID alerte"
+// @Produce      plain
+// @Success      200  {string}  string
+// @Failure      400  {object}  models.APIError
 // @Failure      404  {object}  models.APIError
 // @Router       /alerts/{id} [get]
-/*func (c *AlertController) get(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	a, err := c.svc.Get(r.Context(), id)
-	if err != nil { writeErr(w, http.StatusBadRequest, err.Error()); return }
-	if a == nil { writeErr(w, http.StatusNotFound, "not found"); return }
-	writeJSON(w, http.StatusOK, a)
-}*/
-
 func (c *AlertController) get(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	a, err := c.svc.Get(r.Context(), id)
@@ -131,29 +102,14 @@ func (c *AlertController) get(w http.ResponseWriter, r *http.Request) {
 
 
 
-
-
-
-// create
-// @Summary      Create alert
+// @Summary      Créer une alerte
 // @Tags         alerts
 // @Accept       json
-// @Produce      json
-// @Param        payload  body  models.Alert  true  "Alert"
-// @Success      201  {object}  models.Alert
-// @Failure      400  {object}  models.APIError
+// @Produce      plain
+// @Param        alert  body      models.Alert  true  "Alerte"
+// @Success      201    {string}  string
+// @Failure      400    {object}  models.APIError
 // @Router       /alerts [post]
-/*func (c *AlertController) create(w http.ResponseWriter, r *http.Request) {
-	var a models.Alert
-	if err := json.NewDecoder(r.Body).Decode(&a); err != nil {
-		writeErr(w, http.StatusBadRequest, "invalid json"); return
-	}
-	if err := c.svc.Create(r.Context(), a); err != nil {
-		writeErr(w, http.StatusBadRequest, err.Error()); return
-	}
-	writeJSON(w, http.StatusCreated, a)
-}*/
-
 func (c *AlertController) create(w http.ResponseWriter, r *http.Request) {
 	var a models.Alert
 	if err := json.NewDecoder(r.Body).Decode(&a); err != nil {
@@ -180,33 +136,16 @@ func (c *AlertController) create(w http.ResponseWriter, r *http.Request) {
 
 
 
-
-
-// update
-// @Summary      Update alert
+// @Summary      Mettre à jour une alerte
 // @Tags         alerts
 // @Accept       json
-// @Produce      json
-// @Param        id       path  string        true  "Alert ID"
-// @Param        payload  body  models.Alert  true  "Alert"
-// @Success      200  {object}  models.Alert
-// @Failure      404  {object}  models.APIError
+// @Produce      plain
+// @Param        id     path      string       true  "ID alerte"
+// @Param        alert  body      models.Alert true  "Alerte"
+// @Success      200    {string}  string
+// @Failure      400    {object}  models.APIError
+// @Failure      404    {object}  models.APIError
 // @Router       /alerts/{id} [put]
-/*func (c *AlertController) update(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	var payload models.Alert
-	if err := json.NewDecoder(r.Body).Decode(&payload); err != nil {
-		writeErr(w, http.StatusBadRequest, "invalid json"); return
-	}
-	payload.ID = id
-	if err := c.svc.Update(r.Context(), payload); err != nil {
-		if err == sql.ErrNoRows { writeErr(w, http.StatusNotFound, "not found"); return }
-		writeErr(w, http.StatusBadRequest, err.Error()); return
-	}
-	writeJSON(w, http.StatusOK, payload)
-}*/
-
-
 func (c *AlertController) update(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	var payload models.Alert
@@ -240,26 +179,14 @@ func (c *AlertController) update(w http.ResponseWriter, r *http.Request) {
 
 
 
-
-
-
-
-// delete
-// @Summary      Delete alert
+// @Summary      Supprimer une alerte
 // @Tags         alerts
-// @Param        id  path  string  true  "Alert ID"
-// @Success      204  "No Content"
+// @Param        id   path      string  true  "ID alerte"
+// @Produce      plain
+// @Success      200  {string}  string
+// @Failure      400  {object}  models.APIError
 // @Failure      404  {object}  models.APIError
 // @Router       /alerts/{id} [delete]
-/*func (c *AlertController) delete(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	if err := c.svc.Delete(r.Context(), id); err != nil {
-		if err == sql.ErrNoRows { writeErr(w, http.StatusNotFound, "not found"); return }
-		writeErr(w, http.StatusBadRequest, err.Error()); return
-	}
-	w.WriteHeader(http.StatusNoContent)
-}*/
-
 func (c *AlertController) delete(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 	if err := c.svc.Delete(r.Context(), id); err != nil {
@@ -277,6 +204,3 @@ func (c *AlertController) delete(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Alerte supprimée (id = %s)\n", id)
 }
 
-
-
-// NOTE: writeJSON and writeErr are already available in agenda_controller.go (same package).

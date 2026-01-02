@@ -1,4 +1,10 @@
 package main
+// @title           Config API
+// @version         1.0
+// @description     API de gestion des agendas et alertes
+// @host            localhost:8080
+// @BasePath        /
+// @schemes         http
 
 import (
 	"context"
@@ -16,12 +22,14 @@ import (
 	"middleware/example/internal/repositories"
 	"middleware/example/internal/services"
 	httpSwagger "github.com/swaggo/http-swagger"
+	_ "middleware/example/docs"
+
 )
 
 func main() {
 	dbPath := os.Getenv("DB_PATH")
 	if dbPath == "" {
-		dbPath = "./users.db"
+		dbPath = "./config.db"
 	}
 
 	db, err := sql.Open("sqlite3", dbPath)
@@ -52,13 +60,15 @@ func main() {
 
 	r := chi.NewRouter()
 
-	r.Handle("/api/*", http.StripPrefix("/api", http.FileServer(http.Dir("./api"))))
+	//r.Handle("/api/*", http.StripPrefix("/api", http.FileServer(http.Dir("./api"))))
 
-	// UI Swagger accessible sur http://localhost:8080/swagger/index.html
+/*	// UI Swagger accessible sur http://localhost:8080/swagger/index.html
 r.Get("/swagger/*", httpSwagger.Handler(
     httpSwagger.URL("/api/swagger.json"), // l’UI pointe vers ce JSON
-    ))
-
+    ))*/
+    
+    
+    r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("/swagger/doc.json"), ))
 
 
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {

@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"middleware/alerter/internal/models"
+	 "middleware/internal/models"
 )
 
 type Client struct {

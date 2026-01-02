@@ -9,8 +9,8 @@ import (
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/nats-io/nats.go"
 	"middleware/consumer/internal/models"
-	"middleware/consumer/internal/store"
-	"middleware/consumer/internal/alerts"
+	"middleware/consumer/internal/repositories/store"
+	"middleware/consumer/internal/services/alerts"
 )
 
 type Runner struct {
@@ -47,6 +47,8 @@ func (r *Runner) Run(ctx context.Context) error {
 
 	// Callback sur chaque message
 	cc, err := cons.Consume(func(m jetstream.Msg) {
+	log.Println("[consumer] raw message:", string(m.Data()))//pour voir 
+
 		var ev models.Event
 		if err := json.Unmarshal(m.Data(), &ev); err != nil {
 			log.Printf("[consumer] json err: %v", err)
@@ -63,7 +65,7 @@ func (r *Runner) Run(ctx context.Context) error {
 
 		changes := store.Diff(old, ev)
 		if old == nil {
-			// Nouveau cours → on peut envoyer une alerte “nouvel événement”
+			// Nouveau cours → on peut envoyer une alerte “nouvel événement” //finalement non 
 			msg := models.AlertMessage{
 				Type:       "event_new",
 				EventID:    ev.ID,
