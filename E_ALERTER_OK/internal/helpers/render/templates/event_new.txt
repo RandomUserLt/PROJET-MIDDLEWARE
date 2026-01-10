@@ -1,0 +1,14 @@
+---
+subject: "[EDT] Nouveau cours : {{.Title}}"
+---
+
+Bonjour,
+
+Un nouveau cours a été ajouté à votre emploi du temps.
+
+Intitulé : {{.Title}}
+Date     : {{.StartFmt}}
+Fin      : {{.EndFmt}}
+Lieu     : {{.Location}}
+
+Bonne journée.
