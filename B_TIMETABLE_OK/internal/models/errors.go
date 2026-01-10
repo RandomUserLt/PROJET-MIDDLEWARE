@@ -7,7 +7,6 @@ type ErrorUnprocessableEntity struct {
 }
 
 func (e ErrorUnprocessableEntity) Error() string {
-	//return fmt.Sprintf("Unprocessable entity - %s", e.Message)
 	return e.Message
 }
 
