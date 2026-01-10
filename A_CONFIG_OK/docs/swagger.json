@@ -4,33 +4,28 @@
     ],
     "swagger": "2.0",
     "info": {
-        "description": "API de configuration : agendas \u0026 alerts (CRUD).",
-        "title": "Unicorn – Config API",
-        "contact": {
-            "name": "Morty",
-            "url": "http://localhost:8080/swagger/index.html"
-        },
+        "description": "API de gestion des agendas et alertes",
+        "title": "Config API",
+        "contact": {},
         "version": "1.0"
     },
+    "host": "localhost:8080",
     "basePath": "/",
     "paths": {
         "/agendas": {
             "get": {
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "agendas"
                 ],
-                "summary": "List agendas",
+                "summary": "Lister les agendas",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Agenda"
-                            }
+                            "type": "string"
                         }
                     },
                     "500": {
@@ -51,7 +46,7 @@
                 "tags": [
                     "agendas"
                 ],
-                "summary": "Create agenda",
+                "summary": "Créer un agenda",
                 "parameters": [
                     {
                         "description": "Agenda",
@@ -82,16 +77,16 @@
         "/agendas/{id}": {
             "get": {
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "agendas"
                 ],
-                "summary": "Get agenda by id",
+                "summary": "Récupérer un agenda",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Agenda ID",
+                        "description": "ID agenda",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -101,7 +96,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Agenda"
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIError"
                         }
                     },
                     "404": {
@@ -117,23 +118,23 @@
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "agendas"
                 ],
-                "summary": "Update agenda",
+                "summary": "Mettre à jour un agenda",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Agenda ID",
+                        "description": "ID agenda",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Agenda",
-                        "name": "payload",
+                        "description": "Agenda (le champ id du body est ignoré, l'URL fait foi)",
+                        "name": "agenda",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -145,7 +146,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Agenda"
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIError"
                         }
                     },
                     "404": {
@@ -157,22 +164,34 @@
                 }
             },
             "delete": {
+                "produces": [
+                    "text/plain"
+                ],
                 "tags": [
                     "agendas"
                 ],
-                "summary": "Delete agenda",
+                "summary": "Supprimer un agenda",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Agenda ID",
+                        "description": "ID agenda",
                         "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIError"
+                        }
                     },
                     "404": {
                         "description": "Not Found",
@@ -186,16 +205,16 @@
         "/alerts": {
             "get": {
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "alerts"
                 ],
-                "summary": "List alerts (optional filter by agenda_id)",
+                "summary": "Lister les alertes",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Filter by agenda id",
+                        "description": "Filtrer par agenda_id",
                         "name": "agenda_id",
                         "in": "query"
                     }
@@ -204,10 +223,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Alert"
-                            }
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -223,16 +239,16 @@
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "alerts"
                 ],
-                "summary": "Create alert",
+                "summary": "Créer une alerte",
                 "parameters": [
                     {
-                        "description": "Alert",
-                        "name": "payload",
+                        "description": "Alerte",
+                        "name": "alert",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -244,7 +260,7 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Alert"
+                            "type": "string"
                         }
                     },
                     "400": {
@@ -259,16 +275,16 @@
         "/alerts/{id}": {
             "get": {
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "alerts"
                 ],
-                "summary": "Get alert by id",
+                "summary": "Récupérer une alerte",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Alert ID",
+                        "description": "ID alerte",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -278,7 +294,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Alert"
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIError"
                         }
                     },
                     "404": {
@@ -294,23 +316,23 @@
                     "application/json"
                 ],
                 "produces": [
-                    "application/json"
+                    "text/plain"
                 ],
                 "tags": [
                     "alerts"
                 ],
-                "summary": "Update alert",
+                "summary": "Mettre à jour une alerte",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Alert ID",
+                        "description": "ID alerte",
                         "name": "id",
                         "in": "path",
                         "required": true
                     },
                     {
-                        "description": "Alert",
-                        "name": "payload",
+                        "description": "Alerte",
+                        "name": "alert",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -322,7 +344,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Alert"
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIError"
                         }
                     },
                     "404": {
@@ -334,83 +362,40 @@
                 }
             },
             "delete": {
+                "produces": [
+                    "text/plain"
+                ],
                 "tags": [
                     "alerts"
                 ],
-                "summary": "Delete alert",
+                "summary": "Supprimer une alerte",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "Alert ID",
+                        "description": "ID alerte",
                         "name": "id",
                         "in": "path",
                         "required": true
                     }
                 ],
                 "responses": {
-                    "204": {
-                        "description": "No Content"
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.APIError"
+                        }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
                             "$ref": "#/definitions/models.APIError"
                         }
-                    }
-                }
-            }
-        },
-        "/users": {
-            "get": {
-                "description": "Get all users.",
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get all users.",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.User"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Something went wrong"
-                    }
-                }
-            }
-        },
-        "/users/{id}": {
-            "get": {
-                "description": "Get a user.",
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get a user.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "User UUID formatted ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
-                    },
-                    "422": {
-                        "description": "Cannot parse id"
-                    },
-                    "500": {
-                        "description": "Something went wrong"
                     }
                 }
             }
@@ -451,17 +436,6 @@
                 },
                 "target": {
                     "description": "e.g., email address",
-                    "type": "string"
-                }
-            }
-        },
-        "models.User": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string"
-                },
-                "name": {
                     "type": "string"
                 }
             }

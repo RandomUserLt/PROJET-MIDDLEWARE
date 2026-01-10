@@ -25,37 +25,27 @@ definitions:
         description: e.g., email address
         type: string
     type: object
-  models.User:
-    properties:
-      id:
-        type: string
-      name:
-        type: string
-    type: object
+host: localhost:8080
 info:
-  contact:
-    name: Morty
-    url: http://localhost:8080/swagger/index.html
-  description: 'API de configuration : agendas & alerts (CRUD).'
-  title: Unicorn – Config API
+  contact: {}
+  description: API de gestion des agendas et alertes
+  title: Config API
   version: "1.0"
 paths:
   /agendas:
     get:
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Agenda'
-            type: array
+            type: string
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.APIError'
-      summary: List agendas
+      summary: Lister les agendas
       tags:
       - agendas
     post:
@@ -79,228 +69,222 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.APIError'
-      summary: Create agenda
+      summary: Créer un agenda
       tags:
       - agendas
   /agendas/{id}:
     delete:
       parameters:
-      - description: Agenda ID
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "204":
-          description: No Content
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.APIError'
-      summary: Delete agenda
-      tags:
-      - agendas
-    get:
-      parameters:
-      - description: Agenda ID
+      - description: ID agenda
         in: path
         name: id
         required: true
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Agenda'
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/models.APIError'
-      summary: Get agenda by id
+      summary: Supprimer un agenda
+      tags:
+      - agendas
+    get:
+      parameters:
+      - description: ID agenda
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Récupérer un agenda
       tags:
       - agendas
     put:
       consumes:
       - application/json
       parameters:
-      - description: Agenda ID
+      - description: ID agenda
         in: path
         name: id
         required: true
         type: string
-      - description: Agenda
+      - description: Agenda (le champ id du body est ignoré, l'URL fait foi)
         in: body
-        name: payload
+        name: agenda
         required: true
         schema:
           $ref: '#/definitions/models.Agenda'
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Agenda'
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/models.APIError'
-      summary: Update agenda
+      summary: Mettre à jour un agenda
       tags:
       - agendas
   /alerts:
     get:
       parameters:
-      - description: Filter by agenda id
+      - description: Filtrer par agenda_id
         in: query
         name: agenda_id
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            items:
-              $ref: '#/definitions/models.Alert'
-            type: array
+            type: string
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/models.APIError'
-      summary: List alerts (optional filter by agenda_id)
+      summary: Lister les alertes
       tags:
       - alerts
     post:
       consumes:
       - application/json
       parameters:
-      - description: Alert
+      - description: Alerte
         in: body
-        name: payload
+        name: alert
         required: true
         schema:
           $ref: '#/definitions/models.Alert'
       produces:
-      - application/json
+      - text/plain
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Alert'
+            type: string
         "400":
           description: Bad Request
           schema:
             $ref: '#/definitions/models.APIError'
-      summary: Create alert
+      summary: Créer une alerte
       tags:
       - alerts
   /alerts/{id}:
     delete:
       parameters:
-      - description: Alert ID
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "204":
-          description: No Content
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/models.APIError'
-      summary: Delete alert
-      tags:
-      - alerts
-    get:
-      parameters:
-      - description: Alert ID
+      - description: ID alerte
         in: path
         name: id
         required: true
         type: string
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Alert'
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/models.APIError'
-      summary: Get alert by id
+      summary: Supprimer une alerte
+      tags:
+      - alerts
+    get:
+      parameters:
+      - description: ID alerte
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.APIError'
+      summary: Récupérer une alerte
       tags:
       - alerts
     put:
       consumes:
       - application/json
       parameters:
-      - description: Alert ID
+      - description: ID alerte
         in: path
         name: id
         required: true
         type: string
-      - description: Alert
+      - description: Alerte
         in: body
-        name: payload
+        name: alert
         required: true
         schema:
           $ref: '#/definitions/models.Alert'
       produces:
-      - application/json
+      - text/plain
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Alert'
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.APIError'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/models.APIError'
-      summary: Update alert
+      summary: Mettre à jour une alerte
       tags:
       - alerts
-  /users:
-    get:
-      description: Get all users.
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.User'
-            type: array
-        "500":
-          description: Something went wrong
-      summary: Get all users.
-      tags:
-      - users
-  /users/{id}:
-    get:
-      description: Get a user.
-      parameters:
-      - description: User UUID formatted ID
-        in: path
-        name: id
-        required: true
-        type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.User'
-        "422":
-          description: Cannot parse id
-        "500":
-          description: Something went wrong
-      summary: Get a user.
-      tags:
-      - users
 schemes:
 - http
 swagger: "2.0"
