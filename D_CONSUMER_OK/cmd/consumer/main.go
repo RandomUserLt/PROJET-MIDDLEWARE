@@ -7,9 +7,9 @@ import (
 	"os/signal"
 	"syscall"
 
-	"middleware/consumer/internal/alerts"
-	"middleware/consumer/internal/consumer"
-	"middleware/consumer/internal/store"
+	"middleware/consumer/internal/services/alerts"
+	"middleware/consumer/internal/services/consumer"
+	"middleware/consumer/internal/repositories/store"
 )
 
 func env(k, def string) string {

@@ -9,8 +9,8 @@ import (
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/nats-io/nats.go"
 	"middleware/consumer/internal/models"
-	"middleware/consumer/internal/store"
-	"middleware/consumer/internal/alerts"
+	"middleware/consumer/internal/repositories/store"
+	"middleware/consumer/internal/services/alerts"
 )
 
 type Runner struct {
@@ -41,16 +41,18 @@ func NewRunner(natsURL string, st *store.Store, ap *alerts.Publisher) (*Runner, 
 }
 
 func (r *Runner) Run(ctx context.Context) error {
-	// Consumer durable
+	
 	cons, err := r.ensureConsumer(ctx, "timetable_consumer")
 	if err != nil { return err }
 
-	// Callback sur chaque message
+	
 	cc, err := cons.Consume(func(m jetstream.Msg) {
+	log.Println("[consumer] raw message:", string(m.Data()))//pour voir 
+
 		var ev models.Event
 		if err := json.Unmarshal(m.Data(), &ev); err != nil {
 			log.Printf("[consumer] json err: %v", err)
-			_ = m.Ack() // ack pour éviter boucle
+			_ = m.Ack()
 			return
 		}
 
@@ -63,7 +65,6 @@ func (r *Runner) Run(ctx context.Context) error {
 
 		changes := store.Diff(old, ev)
 		if old == nil {
-			// Nouveau cours → on peut envoyer une alerte “nouvel événement”
 			msg := models.AlertMessage{
 				Type:       "event_new",
 				EventID:    ev.ID,
@@ -96,7 +97,7 @@ func (r *Runner) Run(ctx context.Context) error {
 			}
 		}
 
-		// Upsert en DB (à la fin pour garder l'ancien pour le diff)
+		
 		if err := r.ST.UpsertEvent(ctx, ev); err != nil {
 			log.Printf("[consumer] db upsert err: %v", err)
 		}

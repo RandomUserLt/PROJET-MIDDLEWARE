@@ -14,7 +14,7 @@ import (
 type Publisher struct {
 	nc      *nats.Conn
 	jsc     nats.JetStreamContext
-	subject string // ex: "ALERTS.upsert"
+	subject string 
 }
 
 type Options struct {
@@ -34,7 +34,7 @@ func New(ctx context.Context, opt Options) (*Publisher, error) {
 	jsc, err := nc.JetStream(nats.PublishAsyncMaxPending(256))
 	if err != nil { nc.Close(); return nil, err }
 
-	// Assure le stream (idempotent)
+	
 	_, _ = jsc.AddStream(&nats.StreamConfig{
 		Name:     opt.Stream,
 		Subjects: []string{ opt.Stream + ".>" },
@@ -61,7 +61,7 @@ func (p *Publisher) Publish(msg models.AlertMessage) error {
 	}
 }
 
-// Construit le texte “prêt pour email” avec détail des modifications.
+
 func BuildEmailText(ev models.Event, changes []models.Change) string {
 	if len(changes) == 0 {
 		return fmt.Sprintf("Nouveau cours: %s\nQuand: %s → %s\nOù: %s\n", ev.Title, ev.Start, ev.End, ev.Location)
