@@ -22,7 +22,7 @@ import (
 )
 
 func main() {
-	// HTTP client with timeout to fetch the iCal
+
 	client := &http.Client{ Timeout: 15 * time.Second }
 
 	svc := services.NewTimetableService(client)
@@ -30,15 +30,11 @@ func main() {
 
 	r := chi.NewRouter()
 
-	// Swagger (re-use the same /api swagger dir if you generate combined docs)
 	r.Handle("/docs/*", http.StripPrefix("/docs", http.FileServer(http.Dir("./docs"))))
 	r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("/docs/swagger.json"),))
 
-	// Routes
 	r.Get("/events", ctrl.List)
-	//new
 	r.Get("/events/{id}", ctrl.GetByID)
-	//id := chi.URLParam(r, "id")
 
 	port := os.Getenv("PORT")
 	if port == "" {

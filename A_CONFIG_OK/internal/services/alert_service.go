@@ -19,7 +19,7 @@ type AlertService interface {
 
 type alertService struct {
 	repo    repositories.AlertRepository
-	agendas repositories.AgendaRepository // used to validate agenda existence
+	agendas repositories.AgendaRepository 
 }
 
 func NewAlertService(r repositories.AlertRepository, agendaRepo repositories.AgendaRepository) AlertService {
@@ -46,7 +46,7 @@ func validateAlert(a models.Alert) error {
 	}
 	switch a.Condition {
 	case "always", "room_change", "time_change", "teacher_change":
-		// ok
+
 	default:
 		return errors.New("invalid condition")
 	}

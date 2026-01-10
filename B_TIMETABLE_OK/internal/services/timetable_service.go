@@ -13,19 +13,19 @@ import (
 	"middleware/example/internal/models"
 )
 
-// Interface exportée
+
 type TimetableService interface {
 	FetchEvents(agendaIDs []string, from, to *time.Time) ([]models.Event, error)
 }
 
-// Type concret non-exporté
+
 type timetableService struct {
 	client     *http.Client
 	IcalBase   string
 	WeeksParam string
 }
 
-// Constructeur
+
 func NewTimetableService(client *http.Client) TimetableService {
 	return &timetableService{
 		client:     client,
@@ -34,7 +34,7 @@ func NewTimetableService(client *http.Client) TimetableService {
 	}
 }
 
-// Helper pour construire l'URL iCal
+
 func (s *timetableService) buildURL(agendaIDs []string) (string, error) {
 	if len(agendaIDs) == 0 {
 		return "", errors.New("agendaIds required")
@@ -43,7 +43,7 @@ func (s *timetableService) buildURL(agendaIDs []string) (string, error) {
 	return fmt.Sprintf("%s&nbWeeks=%s&resources=%s", s.IcalBase, s.WeeksParam, joined), nil
 }
 
-// Méthode principale
+
 func (s *timetableService) FetchEvents(agendaIDs []string, from, to *time.Time) ([]models.Event, error) {
 	var allEvents []models.Event
 
@@ -68,14 +68,14 @@ func (s *timetableService) FetchEvents(agendaIDs []string, from, to *time.Time) 
 		return nil, err
 	}
 
-	// Parse calendar correctement
+	
 	cal, err := ics.ParseCalendar(bytes.NewReader(data))
 	if err != nil {
 		return nil, err
 	}
 
 	for _, e := range cal.Events() {
-		layout := "20060102T150405Z" // format iCal UTC
+		layout := "20060102T150405Z"
 
 		startTime, _ := time.Parse(layout, e.GetProperty("DTSTART").Value)
 		endTime, _ := time.Parse(layout, e.GetProperty("DTEND").Value)

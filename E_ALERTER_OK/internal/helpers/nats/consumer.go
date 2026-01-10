@@ -32,7 +32,7 @@ func (r *Runner) Run(ctx context.Context) error {
 	js, err := jetstream.New(nc)
 	if err != nil { return err }
 
-	// Assure le stream (au cas où)
+
 	_, _ = js.CreateStream(ctx, jetstream.StreamConfig{
 		Name:     r.Stream,
 		Subjects: []string{ r.Stream + ".>" },
@@ -46,7 +46,7 @@ func (r *Runner) Run(ctx context.Context) error {
 		cons, err = stream.CreateConsumer(ctx, jetstream.ConsumerConfig{
 			Durable: r.Durable,
 			Name:    r.Durable,
-			FilterSubject: r.Subject, // si tu veux filtrer "ALERTS.upsert"
+			FilterSubject: r.Subject, 
 			AckPolicy: jetstream.AckExplicitPolicy,
 		})
 		if err != nil { return err }
@@ -63,10 +63,10 @@ func (r *Runner) Run(ctx context.Context) error {
 			return
 		}
 
-		// Résolution des destinataires (via Config) pour chaque agenda
+		
 		targets := make(map[string]struct{})
 
-		// 1) pour chaque agendaId, récupérer les subs ciblant cet agenda
+		
 		for _, ag := range evt.AgendaIDs {
 			subs, err := r.Config.ListAlerts(ctx, ag)
 			if err != nil {
@@ -74,14 +74,14 @@ func (r *Runner) Run(ctx context.Context) error {
 				continue
 			}
 			for _, s := range subs {
-				// Filtre par condition : always, room_change, time_change, etc.
+				
 				if shouldNotify(s.Condition, evt.Changes, evt.Type) {
 					targets[s.Target] = struct{}{}
 				}
 			}
 		}
 
-		// 2) éventuellement, des subs "globaux" (agendaId="")
+		
 		if subsAll, err := r.Config.ListAlerts(ctx, ""); err == nil {
 			for _, s := range subsAll {
 				if s.AgendaID == "" || s.AgendaID == "all" {
@@ -93,34 +93,22 @@ func (r *Runner) Run(ctx context.Context) error {
 		}
 
 		if len(targets) == 0 {
-			return // pas de destinataires -> on sort
+			return 
 		}
 
-		// 3) Rendu du mail via templates
+		
+		
 		subject, body, err := render.RenderMail(evt)
 		if err != nil {
-			// Fallback : on envoie le EmailText si rendu ko
-			subject = "[EDT] Notification"
+			subject = "[EDT] Notification"   
 			body = evt.EmailText
 		}
 
-		// 4) Envoi à tous les destinataires
-		/*for to := range targets {
-			msg := models.OutgoingMail{
-				To: to, Subject: subject, Text: body,
-			}
-			ctxSend, cancel := context.WithTimeout(ctx, 10*time.Second)
-			if err := r.Mailer.Send(ctxSend, msg); err != nil {
-				log.Printf("[alerter] send err to %s: %v", to, err)
-			}
-			cancel()
-		}*/
-		//nouvelle version
 		for to := range targets {
 		mail := models.OutgoingMail{
-		Recipient: to,       // anciennement To
-		Subject:   subject,  // identique
-		Content:   body,     // anciennement Text
+		Recipient: to,       
+		Subject:   subject, 
+		Content:   body,    
 	}
 
 	ctxSend, cancel := context.WithTimeout(ctx, 10*time.Second)
@@ -145,6 +133,9 @@ func shouldNotify(cond string, changes []models.Change, typ string) bool {
 		return true
 	}
 	if typ == "event_new" && cond == "new_event" {
+		return true
+	}
+	if typ == "event_changed" { 
 		return true
 	}
 	for _, c := range changes {

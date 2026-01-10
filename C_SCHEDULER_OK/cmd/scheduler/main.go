@@ -37,7 +37,6 @@ func env(k, def string) string {
 	return def
 }
 
-// -------- CONFIG: parse plain text "Liste des Agendas" -> []string IDs --------
 
 var reIdent = regexp.MustCompile(`Identifiant\s*:\s*([0-9]+)`)
 
@@ -59,7 +58,6 @@ func parseAgendaIDsFromConfigPlainText(s string) []string {
 func filterLikelyUCAResources(ids []string) []string {
 	var out []string
 	for _, id := range ids {
-		// heuristique simple (à ajuster si besoin)
 		if len(id) >= 4 {
 			out = append(out, id)
 		}
@@ -67,7 +65,7 @@ func filterLikelyUCAResources(ids []string) []string {
 	return out
 }
 
-// -------- ICAL URL --------
+
 
 func buildIcalURL(icalBase string, ids []string) (string, error) {
 	u, err := url.Parse(icalBase)
@@ -80,7 +78,6 @@ func buildIcalURL(icalBase string, ids []string) (string, error) {
 	return u.String(), nil
 }
 
-// -------- ICAL PARSER MINIMAL --------
 
 func unfoldICalLines(raw []byte) []string {
 	sc := bufio.NewScanner(bytes.NewReader(raw))
@@ -179,8 +176,8 @@ func parseEventsFromICal(raw []byte, agendaID string) ([]Event, error) {
 		}
 
 		events = append(events, Event{
-			ID:          uid + "|" + agendaID,      // évite collisions
-			AgendaIDs:   []string{agendaID},        // <= mono agenda
+			ID:          uid + "|" + agendaID,      
+			AgendaIDs:   []string{agendaID},      
 			Title:       props["SUMMARY"],
 			Description: props["DESCRIPTION"],
 			Start:       startT.UTC().Format(time.RFC3339),
@@ -221,7 +218,7 @@ func parseEventsFromICal(raw []byte, agendaID string) ([]Event, error) {
 	return events, nil
 }
 
-// -------- NATS publish --------
+
 
 func publishEventsCount(jsc nats.JetStreamContext, subject string, events []Event) int {
 	published := 0
@@ -240,7 +237,7 @@ func publishEventsCount(jsc nats.JetStreamContext, subject string, events []Even
 	return published
 }
 
-// -------- Job --------
+
 
 func fetchAndPublishFromConfigAndIcal(jsc nats.JetStreamContext) {
 	configURL := env("CONFIG_URL", "http://localhost:8080/agendas")

@@ -89,7 +89,6 @@ func Diff(old *models.Event, new models.Event) []models.Change {
 	add("start",    "time_change", old.Start,    new.Start)
 	add("end",      "time_change", old.End,      new.End)
 	add("title",    "title_change", old.Title,   new.Title)
-	// Description souvent verbeuse — on peut l’ignorer si tu veux. Ici on la compare.
 	add("description", "description_change", old.Description, new.Description)
 	return changes
 }

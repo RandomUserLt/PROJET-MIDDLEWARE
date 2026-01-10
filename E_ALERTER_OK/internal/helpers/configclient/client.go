@@ -51,7 +51,7 @@ func (c *Client) ListAlerts(ctx context.Context, agendaID string) ([]models.Aler
 
 	ct := res.Header.Get("Content-Type")
 
-	// 1) Si JSON, on garde ton comportement
+	
 	if strings.Contains(ct, "application/json") {
 		var out []models.AlertSubscription
 		if err := json.NewDecoder(res.Body).Decode(&out); err != nil {
@@ -63,7 +63,7 @@ func (c *Client) ListAlerts(ctx context.Context, agendaID string) ([]models.Aler
 		return out, nil
 	}
 
-	// 2) Sinon, on parse le plain text
+	
 	b, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -89,7 +89,6 @@ func parseAlertsPlainText(s string) ([]models.AlertSubscription, error) {
 		if cur == nil {
 			return
 		}
-		// Si tu veux être strict, tu peux valider ID/Target ici
 		out = append(out, *cur)
 		cur = nil
 	}
@@ -100,28 +99,24 @@ func parseAlertsPlainText(s string) ([]models.AlertSubscription, error) {
 			continue
 		}
 
-		// "Alerte n°1" démarre un bloc
+	
 		if strings.HasPrefix(line, "Alerte n°") {
 			flush()
 			cur = &models.AlertSubscription{}
 			continue
 		}
 
-		// Ignore l’entête "Liste des alertes :"
+
 		if strings.HasPrefix(line, "Liste des alertes") {
 			continue
 		}
 
-		// Si on n'a pas encore ouvert de bloc, on ignore
+		
 		if cur == nil {
 			continue
 		}
 
-		// Format attendu (après TrimSpace) :
-		// "Identifiant : a1"
-		// "Agenda ID   : 1"
-		// "Cible       : you@example.com"
-		// "Condition   : always"
+
 		switch {
 		case strings.HasPrefix(line, "Identifiant"):
 			cur.ID = strings.TrimSpace(afterColon(line))

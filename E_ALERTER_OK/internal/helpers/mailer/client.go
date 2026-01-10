@@ -23,18 +23,18 @@ type Client struct {
 
 func New(baseURL, token string) *Client {
 	return &Client{
-		base:  strings.TrimRight(baseURL, "/"), // enlève le / final
-		token: strings.TrimSpace(token),        // nettoie le token
+		base:  strings.TrimRight(baseURL, "/"), 
+		token: strings.TrimSpace(token),       
 		http:  &http.Client{Timeout: 10 * time.Second},
 	}
 }
 
 func (c *Client) Send(ctx context.Context, m models.OutgoingMail) error {
-	u := c.base + "/mail" // ex: https://mail-api.edu.forestier.re/mail
+	u := c.base + "/mail" 
 
 	buf := new(bytes.Buffer)
 	enc := json.NewEncoder(buf)
-	enc.SetEscapeHTML(false) // évite les \u003e dans le texte
+	enc.SetEscapeHTML(false) 
 	if err := enc.Encode(m); err != nil {
 		return err
 	}
@@ -45,11 +45,11 @@ func (c *Client) Send(ctx context.Context, m models.OutgoingMail) error {
 	}
 	req.Header.Set("Content-Type", "application/json")
 	if c.token != "" {
-		// ne pas préfixer avec "Bearer ", le contrat GCC attend le token brut
+		
 		req.Header.Set("Authorization", c.token)
 	}
 
-	// Debug facultatif : voir la requête JSON envoyée
+	
 	if os.Getenv("ALERTER_DEBUG") == "1" {
 		log.Printf("[alerter] POST %s auth=%t payload=%s", u, c.token != "", buf.String())
 	}
@@ -60,7 +60,6 @@ func (c *Client) Send(ctx context.Context, m models.OutgoingMail) error {
 	}
 	defer res.Body.Close()
 
-	// L'API GCC renvoie 204 No Content si tout va bien
 	if res.StatusCode != http.StatusNoContent {
 		body, _ := io.ReadAll(res.Body)
 		return fmt.Errorf("mail API %s: %s", res.Status, strings.TrimSpace(string(body)))

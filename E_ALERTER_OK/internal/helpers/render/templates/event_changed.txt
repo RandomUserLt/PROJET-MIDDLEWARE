@@ -1,17 +1,21 @@
 ---
-subject: "[EDT] Mise à jour : {{ .Title }}"
+subject: "[EDT] Mise à jour : {{.Title}}"
 ---
 
-Le cours **{{ .Title }}** a été modifié.
+Bonjour,
 
-Quand : {{ .StartFmt }} → {{ .EndFmt }}
-Où   : {{ .Location }}
+Votre emploi du temps a été mis à jour : le cours « {{.Title}} » a été modifié.
+
+Quand : {{.StartFmt}} → {{.EndFmt}}
+Où   : {{.Location}}
 
 Détails des modifications :
-{{- if .Changes }}
-{{- range .Changes }}
-- {{ . }}
-{{- end }}
-{{- else }}
-Aucun détail supplémentaire.
-{{- end }}
+{{- if .Changes}}
+{{- range .Changes}}
+- {{.}}
+{{- end}}
+{{- else}}
+- Aucun détail supplémentaire.
+{{- end}}
+
+Bonne journée.

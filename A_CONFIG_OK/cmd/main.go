@@ -36,7 +36,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	// important pour faire respecter la FK alerts.agenda_id -> agendas.id
+	
 	if _, err := db.Exec("PRAGMA foreign_keys = ON"); err != nil {
 		log.Fatal(err)
 	}
@@ -60,15 +60,8 @@ func main() {
 
 	r := chi.NewRouter()
 
-	//r.Handle("/api/*", http.StripPrefix("/api", http.FileServer(http.Dir("./api"))))
-
-/*	// UI Swagger accessible sur http://localhost:8080/swagger/index.html
-r.Get("/swagger/*", httpSwagger.Handler(
-    httpSwagger.URL("/api/swagger.json"), // l’UI pointe vers ce JSON
-    ))*/
     
-    
-    r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("/swagger/doc.json"), ))
+   	 r.Get("/swagger/*", httpSwagger.Handler(httpSwagger.URL("/swagger/doc.json"), ))
 
 
 	r.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {

@@ -62,18 +62,12 @@ func (c *TimetableController) List(w http.ResponseWriter, r *http.Request) {
 	}
 
 	events, err := c.svc.FetchEvents(agendaIDs, fromPtr, toPtr)
-	/*if err != nil {
-		writeJSON(w, http.StatusBadGateway, models.APIError{Message: err.Error()})
-		return
-	}
 
-	writeJSON(w, http.StatusOK, events)*/
 	if err != nil {
 		writeJSON(w, http.StatusBadGateway, models.APIError{Message: err.Error()})
 		return
 	}
 
-	// --- Formattage humain directement ---
 	fmt.Fprintf(w, "=== Liste des événements ===\n")
 	for i, ev := range events {
 		startTime, _ := time.Parse(time.RFC3339, ev.Start)
@@ -123,22 +117,17 @@ func (c *TimetableController) GetByID(w http.ResponseWriter, r *http.Request) {
 	}
 	agendaIDs := strings.Split(agendaIdsParam, ",")
 
-	// On ne filtre pas par date ici pour s'assurer que l'ID est trouvé
+	
 	events, err := c.svc.FetchEvents(agendaIDs, nil, nil)
 	if err != nil {
 		writeJSON(w, http.StatusBadGateway, models.APIError{Message: "ical fetch failed: " + err.Error()})
 		return
 	}
 
-	/*for _, ev := range events {
-		if ev.ID == id {
-			writeJSON(w, http.StatusOK, ev)
-			return
-		}
-	}*/
+
 	
 	for _, ev := range events {
-		/*if ev.ID == id*/ if strings.TrimSpace(ev.ID) == strings.TrimSpace(id){
+		 if strings.TrimSpace(ev.ID) == strings.TrimSpace(id){
 		
 			startTime, _ := time.Parse(time.RFC3339, ev.Start)
 			endTime, _ := time.Parse(time.RFC3339, ev.End)
@@ -160,7 +149,7 @@ func (c *TimetableController) GetByID(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintln(w, "Événement non trouvé")
-	//writeJSON(w, http.StatusNotFound, models.APIError{Message: "not found"})
+	
 	
 }
 
@@ -168,14 +157,13 @@ func (c *TimetableController) GetByID(w http.ResponseWriter, r *http.Request) {
 
 
 
-// Fonction utilitaire pour écrire JSON
 func writeJSON(w http.ResponseWriter, code int, v any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	_ = json.NewEncoder(w).Encode(v)
 }
 
-// parseFromTo identique à ton code
+
 func parseFromTo(r *http.Request) (fromPtr, toPtr *time.Time, err error) {
 	q := r.URL.Query()
 	if v := strings.TrimSpace(q.Get("from")); v != "" {
